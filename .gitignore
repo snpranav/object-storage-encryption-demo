@@ -8,6 +8,8 @@
 # testing
 /coverage
 
+.devcontainer
+
 # next.js
 /.next/
 /out/
