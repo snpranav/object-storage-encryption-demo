@@ -1,16 +1,15 @@
 import Head from 'next/head';
-import Image from 'next/image';
 import { useCallback, useState } from 'react';
-import { WebBundlr } from "@bundlr-network/client"
-import { providers } from "ethers";
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
+import { encryptData } from '../utils/crypto';
 
 const UploadPage = () => {
   const [file, setFile] = useState(null);
   const [tempURL, setTempURL] = useState("");
   const [onFileReadError, setOnFileReadError] = useState(false);
   const [cipherText, setCipherText] = useState(null);
+  let JSONPrettyMon = require('react-json-pretty/dist/monikai');
 
   // Useless animation that makes the demo look cool 😎
   const [isEncrypting, setIsEncrypting] = useState(false);
@@ -38,35 +37,60 @@ const UploadPage = () => {
     ["Azure Blob Storage", "/logos/azure-storage-blob--v1.png"],
   ]
 
-  // Function that converts our JS file object to base64 string.
-  function getBase64(file) {
-    let reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      return reader.result;
-    };
-    // handle errors
-    reader.onerror = (error) => {
-      console.error(reader.error);
-      setOnFileReadError(true);
-    };
-  }
+
 
   const handleEncryptUpload = async () => {
+
+    //   setIsEncrypting(true);
+
+    //   console.log(base64EncodedFile);
+
+    //   // 1. Let's use our handy API created in the API folder that will encrypt the base64 encoded file data.
+    //   const cipherText = await axios.post(`/api/encrypt`, {
+    //     plaintext: base64EncodedFile,
+    //   });
+
+    //   setIsEncrypting(false);
+
+    //   console.log(cipherText.data);
+
+    //   setCipherText(JSON.stringify(cipherText.data, null, 2));
+    // } else {
+    //   // JWT to authenticate with the Ciphertrust manager API doesn't exist. Let's create one.
+    //   await axios.get(`/api/create-jwt`);
+    // }
+
+    setIsEncrypting(true); 
+
+    let jwt = await axios.get(`/api/get-jwt`)
+            .catch(err => {
+                console.error(err);
+
+                setIsEncrypting(false);     // Animation Preloader
+            })
+    
+    jwt = jwt.data;
+    
     // Encode file data to base64. This will make it easy for us to encrypt the data using the Ciphertrust manager API.
-    const base64EncodedFile = getBase64(file);
+    // const base64EncodedFile = await getBase64(file)
+    // .catch(err => {
+    //     console.error(err);
+    //     setIsEncrypting(false);
+    // });
 
-    setIsEncrypting(true);
+    setCipherText("");
 
-    // 1. Let's use our handy API created in the API folder that will encrypt the base64 encoded file data.
-    const cipherText = await axios.post(`/api/encrypt`, {
-      plaintext: base64EncodedFile,
-    });
+    // Let's encrypt our data using the Ciphertrust manager API.
+    const cipherText = await encryptData(file, jwt)
+    .catch(err => {
+        console.error(err);
+        setIsEncrypting(false);
+    })
 
     setIsEncrypting(false);
-
-    setCipherText(cipherText.data);
-  }
+    setCipherText(JSON.stringify(cipherText, null, 2));
+    console.log(cipherText);
+  };
 
   return (
     <>
@@ -128,14 +152,6 @@ const UploadPage = () => {
                       <p className='text-sm text-gray-500 dark:text-gray-400'>{file.name} | (Size - {(file.size / 1048576).toFixed(2)} MB)</p>
                     </>
                   )}
-                  {/* Show Ciphertext in a neatly designed code block. */}
-                  {cipherText && (
-                    <div className='flex justify-center items-center w-full'>
-                      <p>
-                        {cipherText}
-                      </p>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
@@ -158,8 +174,32 @@ const UploadPage = () => {
         </a>
       </footer> */}
       </div>
-    </>
-  );
+
+      <div className='grid lg:grid-cols-2 grid-cols-1 justify-center'>
+        <div className='bg-gray-50 rounded-lg border-2 border-gray-300'>
+          {/* Show Ciphertext in a neatly designed code block. */}
+
+          <span>&#123;</span>
+
+          {cipherText && (
+            <pre className='text-sm text-gray-500 dark:text-gray-400'>
+              <code className='text-gray-500 dark:text-gray-400'>{cipherText}</code>
+            </pre>
+          )
+          }
+          < span >&#125;</span>
+        </div>
+        </div>
+        {/* Show Plaintext in a neatljIbu+5GrOMQZF7scy designed code block. */}
+        {/* {plainText && (
+              <p>
+                {plainText}
+              </p>
+            )} */}
+        {/* </div> */}
+        {/* </div> */}
+      </>
+      );
 }
 
-export default UploadPage;
+      export default UploadPage;
