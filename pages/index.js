@@ -3,13 +3,17 @@ import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 import { encryptData } from '../utils/crypto';
+import { CipherTextComponent } from '../components/cipherText';
+import { uploadToS3 } from '../utils/upload';
+import DecryptDataComponent from '../components/DecryptData';
 
 const UploadPage = () => {
   const [file, setFile] = useState(null);
   const [tempURL, setTempURL] = useState("");
   const [onFileReadError, setOnFileReadError] = useState(false);
   const [cipherText, setCipherText] = useState(null);
-  let JSONPrettyMon = require('react-json-pretty/dist/monikai');
+  const [fullCipherText, setFullCipherText] = useState(null);
+  const [objectStorageURL, setObjectStorageURL] = useState("");
 
   // Useless animation that makes the demo look cool 😎
   const [isEncrypting, setIsEncrypting] = useState(false);
@@ -41,55 +45,38 @@ const UploadPage = () => {
 
   const handleEncryptUpload = async () => {
 
-    //   setIsEncrypting(true);
-
-    //   console.log(base64EncodedFile);
-
-    //   // 1. Let's use our handy API created in the API folder that will encrypt the base64 encoded file data.
-    //   const cipherText = await axios.post(`/api/encrypt`, {
-    //     plaintext: base64EncodedFile,
-    //   });
-
-    //   setIsEncrypting(false);
-
-    //   console.log(cipherText.data);
-
-    //   setCipherText(JSON.stringify(cipherText.data, null, 2));
-    // } else {
-    //   // JWT to authenticate with the Ciphertrust manager API doesn't exist. Let's create one.
-    //   await axios.get(`/api/create-jwt`);
-    // }
-
-    setIsEncrypting(true); 
+    setIsEncrypting(true);
 
     let jwt = await axios.get(`/api/get-jwt`)
-            .catch(err => {
-                console.error(err);
+      .catch(err => {
+        console.error(err);
 
-                setIsEncrypting(false);     // Animation Preloader
-            })
-    
+        setIsEncrypting(false);     // Animation Preloader
+      })
+
     jwt = jwt.data;
-    
-    // Encode file data to base64. This will make it easy for us to encrypt the data using the Ciphertrust manager API.
-    // const base64EncodedFile = await getBase64(file)
-    // .catch(err => {
-    //     console.error(err);
-    //     setIsEncrypting(false);
-    // });
 
     setCipherText("");
 
     // Let's encrypt our data using the Ciphertrust manager API.
     const cipherText = await encryptData(file, jwt)
-    .catch(err => {
+      .catch(err => {
         console.error(err);
         setIsEncrypting(false);
-    })
+      })
 
+    const objectStorageURL = await uploadToS3(cipherText, file.name);
+
+    setObjectStorageURL(objectStorageURL);
     setIsEncrypting(false);
-    setCipherText(JSON.stringify(cipherText, null, 2));
-    console.log(cipherText);
+
+    localStorage.setItem("cipherText", cipherText);
+
+    let displayCipherText = cipherText;
+    displayCipherText["ciphertext"] = displayCipherText["ciphertext"].substring(0, 40) + "...";
+    displayCipherText["id"] = displayCipherText["id"].substring(0, 40) + "...";
+    displayCipherText = JSON.stringify(cipherText, null, 2);
+    setCipherText(displayCipherText);
   };
 
   return (
@@ -157,8 +144,19 @@ const UploadPage = () => {
             </div>
           </div>
 
-          <button className='bg-blue-500 text-white hover:bg-blue-600 p-3 mt-4 rounded-md font-semibold' onClick={handleEncryptUpload}>Encrypt and Upload 🔏📤</button>
+          <button className='bg-blue-500 text-white hover:bg-blue-600 p-3 mt-4 rounded-md font-semibold' onClick={handleEncryptUpload}>Encrypt and Upload</button>
           {onFileReadError && <p className='text-red-500'>Oops, there was an error encrypting your file. Please try again!</p>}
+
+          {/* Add an animated down arrow to show people should scroll down */}
+          {
+            cipherText && (
+              <div class="animate-bounce bg-white dark:bg-slate-800 p-2 w-10 h-10 ring-1 mt-28 ring-slate-900/5 dark:ring-slate-200/20 shadow-lg rounded-full flex items-center justify-center cursor-pointer">
+                <svg class="w-6 h-6 text-blue-500 hover:text-blue-700" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                  <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+              </div>
+            )
+          }
 
 
         </main>
@@ -175,31 +173,25 @@ const UploadPage = () => {
       </footer> */}
       </div>
 
-      <div className='grid lg:grid-cols-2 grid-cols-1 justify-center'>
-        <div className='bg-gray-50 rounded-lg border-2 border-gray-300'>
-          {/* Show Ciphertext in a neatly designed code block. */}
+      {cipherText && (
+        <>
+          <CipherTextComponent cipherText={cipherText} objectStorage="AWS S3" uploadedObjectURL={objectStorageURL} />
 
-          <span>&#123;</span>
+          <DecryptDataComponent objectStorageURL={objectStorageURL} />
+        </>
+      )}
 
-          {cipherText && (
-            <pre className='text-sm text-gray-500 dark:text-gray-400'>
-              <code className='text-gray-500 dark:text-gray-400'>{cipherText}</code>
-            </pre>
-          )
-          }
-          < span >&#125;</span>
-        </div>
-        </div>
-        {/* Show Plaintext in a neatljIbu+5GrOMQZF7scy designed code block. */}
-        {/* {plainText && (
+
+      {/* Show Plaintext in a neatljIbu+5GrOMQZF7scy designed code block. */}
+      {/* {plainText && (
               <p>
                 {plainText}
               </p>
             )} */}
-        {/* </div> */}
-        {/* </div> */}
-      </>
-      );
+      {/* </div> */}
+      {/* </div> */}
+    </>
+  );
 }
 
-      export default UploadPage;
+export default UploadPage;
