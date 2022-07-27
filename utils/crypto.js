@@ -4,6 +4,7 @@ import axios from "axios";
 async function encryptData(file, jwt) {
     const fileBase64 = (await getBase64(file)).split(",")[1];
     const cipherText = await axios.post(
+        // We are using an encrypt proxy because calling the API from the browser will cause a CORS error. The encrypt proxy will point your API request to the Ciphertrust manager Crypto API.
         `/api/encrypt-proxy`, {
             id: "s3-encrypt-symmetric-key",
             plaintext: fileBase64,
@@ -38,7 +39,7 @@ const getBase64 = file => new Promise((resolve, reject) => {
 
 // Decrypt data
 async function decryptData(encryptedData, jwt) {
-    const cipherText = await axios.post(
+    const plainText = await axios.post(
         `/api/decrypt-proxy`, {
             ...encryptedData,
             add: "YXV0aGVudGljYXRl"
@@ -52,7 +53,7 @@ async function decryptData(encryptedData, jwt) {
         });
 
 
-    return cipherText.data;
+    return plainText.data;
 }
 
 export { encryptData, decryptData };
