@@ -3,6 +3,7 @@ import { FiExternalLink } from "react-icons/fi";
 import { decryptData } from "../utils/crypto";
 import axios from 'axios';
 import Link from "next/link";
+import BouncingArrow from "./BouncingArrow";
 
 const CipherTextComponent = ({ cipherText, objectStorage, uploadedObjectURL }) => {
 
@@ -18,7 +19,6 @@ const CipherTextComponent = ({ cipherText, objectStorage, uploadedObjectURL }) =
                 showLineNumbers={false}
             />
             <a href={uploadedObjectURL} target="_blank"><button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">View on {objectStorage}  <FiExternalLink className="ml-1 mb-1 inline" /></button></a>
-            
         </div>
     );
 };

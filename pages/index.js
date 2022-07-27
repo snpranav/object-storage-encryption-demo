@@ -3,9 +3,11 @@ import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 import { encryptData } from '../utils/crypto';
-import { CipherTextComponent } from '../components/cipherText';
+import { CipherTextComponent } from '../components/CipherText';
 import { uploadToS3 } from '../utils/upload';
 import DecryptDataComponent from '../components/DecryptData';
+import BouncingArrow from '../components/BouncingArrow';
+import { FaGithub, FaTwitter } from 'react-icons/fa';
 
 const UploadPage = () => {
   const [file, setFile] = useState(null);
@@ -81,9 +83,11 @@ const UploadPage = () => {
 
   return (
     <>
+    {/* Star this on GitHub button */}
+    <button></button>
       <div className="flex min-h-screen flex-col items-center justify-center py-2">
         <Head>
-          <title>Upload Data to Object Storage</title>
+          <title>Encrypt Data to Object Storage</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
@@ -150,27 +154,13 @@ const UploadPage = () => {
           {/* Add an animated down arrow to show people should scroll down */}
           {
             cipherText && (
-              <div class="animate-bounce bg-white dark:bg-slate-800 p-2 w-10 h-10 ring-1 mt-28 ring-slate-900/5 dark:ring-slate-200/20 shadow-lg rounded-full flex items-center justify-center cursor-pointer">
-                <svg class="w-6 h-6 text-blue-500 hover:text-blue-700" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
-                  <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-                </svg>
-              </div>
+              <BouncingArrow />
             )
           }
 
 
         </main>
 
-        {/* <footer className="flex h-24 w-full items-center justify-center border-t">
-        <a
-          className="flex items-center justify-center gap-2"
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-        </a>
-      </footer> */}
       </div>
 
       {cipherText && (
@@ -181,15 +171,23 @@ const UploadPage = () => {
         </>
       )}
 
-
-      {/* Show Plaintext in a neatljIbu+5GrOMQZF7scy designed code block. */}
-      {/* {plainText && (
-              <p>
-                {plainText}
-              </p>
-            )} */}
-      {/* </div> */}
-      {/* </div> */}
+      <footer className="flex flex-col h-24 w-full items-center justify-center border-t">
+        <div>
+        <a
+          className="items-center justify-center gap-2"
+          href="https://snpranav.com"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Built by <span className="text-blue-500 hover:text-blue-700 cursor-pointer">Pranav Shikarpur</span> 
+        </a>
+          <a href='https://github.com/snpranav' className='ml-2 hover:text-blue-700 cursor-pointer' target={'_blank'}><FaGithub className='inline' /></a>
+          <a href='https://twitter.com/snpranav' className='ml-2 hover:text-blue-700 cursor-pointer' target={'_blank'}><FaTwitter className='inline' /></a>
+          </div>
+          <div>
+            <p>Tech used: <a href="https://cpl.thalesgroup.com/encryption/ciphertrust-manager?ref=https://github.com/snpranav/object-storage-encryption-demo" className='text-blue-500 hover:text-blue-700' target={'_blank'}>CipherTrust Manager</a>, <a href="https://aws.amazon.com/s3/" className='text-blue-500 hover:text-blue-700'>AWS S3</a>, <a  href="https://nextjs.org/?ref=https://github.com/snpranav/object-storage-encryption-demo" className='text-blue-500 hover:text-blue-700'>NextJS</a></p>
+          </div>
+      </footer>
     </>
   );
 }

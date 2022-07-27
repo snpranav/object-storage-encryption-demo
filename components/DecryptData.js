@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { decryptData } from "../utils/crypto";
+import BouncingArrow from "./BouncingArrow";
 
 
 export default function DecryptDataComponent({ objectStorageURL }) {
@@ -41,10 +42,15 @@ export default function DecryptDataComponent({ objectStorageURL }) {
 
 
     return (
-        <div className="flex flex-col items-center justify-center mt-28 mb-8">
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleDecrypt}>Decrypt Data</button>
+        <div className="flex flex-col items-center justify-center mt-2 mb-8">
+            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleDecrypt}>Download and Decrypt Data</button>
+
             {tempURL && (
-                <img src={"data:image/png;base64," + tempURL} className="w-96 mt-8" />
+                <>
+                    <BouncingArrow />
+                    <h1 className="text-2xl font-semibold mt-20">Decrypted Plain Text 🔓</h1>
+                    <img src={"data:image/png;base64," + tempURL} className="w-96 " />
+                </>
             )}
 
             {
