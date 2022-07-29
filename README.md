@@ -1,5 +1,7 @@
 # Client Side Encryption Demo for Any Object Storages
 
+![cover image](cover-image.png)
+
 This demo shows you how to encrypt data on the client side and upload it to your favorite without having to worry about figuring out cloud key management solutions.
 
 ## Technology Used in this Demo
