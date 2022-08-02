@@ -83,8 +83,8 @@ const UploadPage = () => {
 
   return (
     <>
-    {/* Star this on GitHub button */}
-    <button></button>
+      {/* Star this on GitHub button */}
+      <button></button>
       <div className="flex min-h-screen flex-col items-center justify-center py-2">
         <Head>
           <title>Encrypt Data to Object Storage</title>
@@ -104,6 +104,10 @@ const UploadPage = () => {
               </div>
             ))}
           </div>
+
+          {/* Add button that links to Github Source Code */}
+          <a href="https://github.com/snpranav/object-storage-encryption-demo"><button className="bg-black text-white p-3 mb-8 rounded-md font-semibold">View Code on <FaGithub className="inline" /></button></a>
+
 
           <p className="my-3 text-2xl font-semibold">
             Try it out 👇
@@ -173,20 +177,20 @@ const UploadPage = () => {
 
       <footer className="flex flex-col h-24 w-full items-center justify-center border-t">
         <div>
-        <a
-          className="items-center justify-center gap-2"
-          href="https://snpranav.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Built by <span className="text-blue-500 hover:text-blue-700 cursor-pointer">Pranav Shikarpur</span> 
-        </a>
+          <a
+            className="items-center justify-center gap-2"
+            href="https://snpranav.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Built by <span className="text-blue-500 hover:text-blue-700 cursor-pointer">Pranav Shikarpur</span>
+          </a>
           <a href='https://github.com/snpranav' className='ml-2 hover:text-blue-700 cursor-pointer' target={'_blank'}><FaGithub className='inline' /></a>
           <a href='https://twitter.com/snpranav' className='ml-2 hover:text-blue-700 cursor-pointer' target={'_blank'}><FaTwitter className='inline' /></a>
-          </div>
-          <div>
-            <p>Tech used: <a href="https://cpl.thalesgroup.com/encryption/ciphertrust-manager?ref=https://github.com/snpranav/object-storage-encryption-demo" className='text-blue-500 hover:text-blue-700' target={'_blank'}>CipherTrust Manager</a>, <a href="https://aws.amazon.com/s3/" className='text-blue-500 hover:text-blue-700'>AWS S3</a>, <a  href="https://nextjs.org/?ref=https://github.com/snpranav/object-storage-encryption-demo" className='text-blue-500 hover:text-blue-700'>NextJS</a></p>
-          </div>
+        </div>
+        <div>
+          <p>Tech used: <a href="https://cpl.thalesgroup.com/encryption/ciphertrust-manager?ref=https://github.com/snpranav/object-storage-encryption-demo" className='text-blue-500 hover:text-blue-700' target={'_blank'}>CipherTrust Manager</a>, <a href="https://aws.amazon.com/s3/" className='text-blue-500 hover:text-blue-700'>AWS S3</a>, <a href="https://nextjs.org/?ref=https://github.com/snpranav/object-storage-encryption-demo" className='text-blue-500 hover:text-blue-700'>NextJS</a></p>
+        </div>
       </footer>
     </>
   );
