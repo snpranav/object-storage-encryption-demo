@@ -1,5 +1,5 @@
 # Client Side Encryption Demo for Any Object Storages
-**Tutorial guide and Demo Video can be found on [CipherTrust Learn](b.io/ciphertrust/docs/key-manager/cs-object-storage)**.
+**Tutorial guide and Demo Video can be found on [CipherTrust Learn](https://thalesgroup.github.io/ciphertrust/docs/key-manager/cs-object-storage)**.
 ![cover image](cover-image.png)
 
 This demo shows you how to encrypt data on the client side and upload it to your favorite without having to worry about figuring out cloud key management solutions.
